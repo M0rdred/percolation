@@ -1,23 +1,20 @@
-
-/**
- * **************************************************************************
- * Compilation: javac PercolationVisualizer.java Execution: java
- * PercolationVisualizer input.txt Dependencies: Percolation.java StdDraw.java
- * In.java
+/****************************************************************************
+ *  Compilation:  javac PercolationVisualizer.java
+ *  Execution:    java PercolationVisualizer input.txt
+ *  Dependencies: Percolation.java StdDraw.java In.java
  *
- * This program takes the name of a file as a command-line argument. From that
- * file, it
+ *  This program takes the name of a file as a command-line argument.
+ *  From that file, it
  *
- * - Reads the grid size N of the percolation system. - Creates an N-by-N grid
- * of sites (intially all blocked) - Reads in a sequence of sites (row i, column
- * j) to open.
+ *    - Reads the grid size N of the percolation system.
+ *    - Creates an N-by-N grid of sites (intially all blocked)
+ *    - Reads in a sequence of sites (row i, column j) to open.
  *
- * After each site is opened, it draws full sites in light blue, open sites
- * (that aren't full) in white, and blocked sites in black, with with site (1,
- * 1) in the upper left-hand corner.
+ *  After each site is opened, it draws full sites in light blue,
+ *  open sites (that aren't full) in white, and blocked sites in black,
+ *  with with site (1, 1) in the upper left-hand corner.
  *
- ***************************************************************************
- */
+ ****************************************************************************/
 
 import java.awt.Font;
 
@@ -32,7 +29,7 @@ public class PercolationVisualizer {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setXscale(0, N);
         StdDraw.setYscale(0, N);
-        StdDraw.filledSquare(N / 2.0, N / 2.0, N / 2.0);
+        StdDraw.filledSquare(N/2.0, N/2.0, N/2.0);
 
         // draw N-by-N grid
         int opened = 0;
@@ -41,12 +38,13 @@ public class PercolationVisualizer {
                 if (perc.isFull(row, col)) {
                     StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                     opened++;
-                } else if (perc.isOpen(row, col)) {
+                }
+                else if (perc.isOpen(row, col)) {
                     StdDraw.setPenColor(StdDraw.WHITE);
                     opened++;
-                } else {
-                    StdDraw.setPenColor(StdDraw.BLACK);
                 }
+                else
+                    StdDraw.setPenColor(StdDraw.BLACK);
                 StdDraw.filledSquare(col - 0.5, N - row + 0.5, 0.45);
             }
         }
@@ -54,12 +52,9 @@ public class PercolationVisualizer {
         // write status text
         StdDraw.setFont(new Font("SansSerif", Font.PLAIN, 12));
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.text(.25 * N, -N * .025, opened + " open sites");
-        if (perc.percolates()) {
-            StdDraw.text(.75 * N, -N * .025, "percolates");
-        } else {
-            StdDraw.text(.75 * N, -N * .025, "does not percolate");
-        }
+        StdDraw.text(.25*N, -N*.025, opened + " open sites");
+        if (perc.percolates()) StdDraw.text(.75*N, -N*.025, "percolates");
+        else                   StdDraw.text(.75*N, -N*.025, "does not percolate");
 
     }
 
@@ -74,15 +69,12 @@ public class PercolationVisualizer {
         Percolation perc = new Percolation(N);
         draw(perc, N);
         StdDraw.show(DELAY);
-        int loop = 1;
         while (!in.isEmpty()) {
             int i = in.readInt();
             int j = in.readInt();
-            System.out.println("Loop: " + loop);
             perc.open(i, j);
             draw(perc, N);
             StdDraw.show(DELAY);
-            loop++;
         }
     }
 }

@@ -12,11 +12,11 @@ public class Percolation {
 
     private final int BLOCKED = 0;
     private final int OPEN = 1;
-    
+
     private int rows;
 
-    int virtualTop;
-    int virtualBottom;
+    private int virtualTop;
+    private int virtualBottom;
 
     private int[][] grid;
 
@@ -27,9 +27,9 @@ public class Percolation {
         if (N > 0) {
 
             quickFind = new QuickFindUF(N * N + 2);
-            
+
             this.rows = N;
-            
+
             virtualTop = 0;
             virtualBottom = quickFind.count() - 1;
 
@@ -46,31 +46,52 @@ public class Percolation {
 
     // open site (row i, column j) if it is not already
     public void open(int i, int j) {
-        if (!isOpen(i, j)) {
-            grid[i - 1][j - 1] = OPEN;
-            int linearSite = linearize(i, j);
+        if (i > 0 || i < rows || j > 0 || j < rows) {
+            if (!isOpen(i, j)) {
 
-            if (i == 1) {
-                union(virtualTop, linearSite);
-            } else if (i == this.rows) {
-                union(virtualBottom, linearSite);
+                grid[i - 1][j - 1] = OPEN;
+                int linearSite = linearize(i, j);
+
+                if (i == 1) {
+                    union(virtualTop, linearSite);
+                } else if (i == this.rows) {
+                    union(virtualBottom, linearSite);
+                }
+
+                if (i != this.rows && isOpen(i + 1, j)) {
+                    union(linearSite, linearize(i + 1, j));
+                }
+                if (i != 1 && isOpen(i - 1, j)) {
+                    union(linearSite, linearize(i - 1, j));
+                }
+                if (j != this.rows && isOpen(i, j + 1)) {
+                    union(linearSite, linearize(i, j + 1));
+                }
+                if (j != 1 && isOpen(i, j - 1)) {
+                    union(linearSite, linearize(i, j - 1));
+                }
             } else {
-                union(linearSite, linearize(i + 1, j));
-                union(linearSite, linearize(i - 1, j));
-                union(linearSite, linearize(i, j + 1));
-                union(linearSite, linearize(i, j - 1));
+                throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
             }
         }
     }
 
     // is site (row i, column j) open?
     public boolean isOpen(int i, int j) {
-        return grid[i - 1][j - 1] == OPEN;
+        if (i > 0 || i < rows || j > 0 || j < rows) {
+            return grid[i - 1][j - 1] == OPEN;
+        } else {
+            throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
+        }
     }
 
     // is site (row i, column j) full?
     public boolean isFull(int i, int j) {
-        return quickFind.connected(virtualTop, linearize(i, j));
+        if (i > 0 || i < rows || j > 0 || j < rows) {
+            return quickFind.connected(virtualTop, linearize(i, j));
+        } else {
+            throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
+        }
     }
 
     // does the system percolate?
@@ -79,7 +100,6 @@ public class Percolation {
     }
 
     private void union(int p, int q) {
-        System.out.println(p + " " + q);
         quickFind.union(p, q);
     }
 
