@@ -1,12 +1,19 @@
+/**
+ *
+ * @author Dániel Szabó
+ * @date 09.19.2014 
+ * Calculates the ratio where a system percolates 
+ * Run PercolationStats with desired params
+ */
 
 public class PercolationStats {
 
-    private Percolation perc;
-    private int N;
-    private int T;
-    private int randX;
-    private int randY;
-    private double[] thresholdValues;
+    private Percolation perc; //actual percolation system
+    private int N; //number of rows and columns
+    private int T; //times the threshold is calculated
+    private int randX; //random X coordinate
+    private int randY; //random Y coordinate
+    private double[] thresholdValues; //array to store thresholds
 
     // perform T independent computational experiments on an N-by-N grid
     public PercolationStats(int N, int T) {
@@ -20,13 +27,15 @@ public class PercolationStats {
             throw new IllegalArgumentException("N and T must be more than zero");
         }
     }
-
+    
+    //store calculated thresholds
     private void calulateThresholdValues() {
         for (int i = 0; i < T; i++) {
             thresholdValues[i] = calculateOneThreshold();
         }
     }
-
+    
+    //calulate threshold for a percolation system
     private double calculateOneThreshold() {
         double openSites = 0;
         perc = new Percolation(N);
@@ -38,8 +47,8 @@ public class PercolationStats {
             try {
                 perc.open(randX, randY);
                 openSites++;
-            } catch (Exception e) {
-
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
         }
         return openSites / (N * N);

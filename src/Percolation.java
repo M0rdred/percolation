@@ -1,26 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
- * @author Mordred
+ * @author Dániel Szabó
+ * @date 09.19.2014 
+ * This is a percolation data model 
+ * Run PercolationStats
  */
 public class Percolation {
 
-    private final int BLOCKED = 0;
-    private final int OPEN = 1;
+    private static final int OPEN = 1; //constant to represent a value for OPEN state
 
-    private int rows;
+    private int rows; //number of rows
 
-    private int virtualTop;
-    private int virtualBottom;
+    private int virtualTop; //virtual site ID above topmost row
+    private int virtualBottom; //virtual site ID below bottommost row
 
-    private int[][] grid;
+    private int[][] grid; //N-by-N grid
 
-    WeightedQuickUnionUF quickFind;
+    private WeightedQuickUnionUF quickFind; //weighted quick find algorithm
 
     // create N-by-N grid, with all sites blocked
     public Percolation(int N) {
@@ -34,11 +30,6 @@ public class Percolation {
             virtualBottom = quickFind.count() - 1;
 
             grid = new int[N][N];
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    grid[i][j] = BLOCKED;
-                }
-            }
         } else {
             throw new IllegalArgumentException("N can't be lower or equal to zero");
         }
@@ -50,28 +41,29 @@ public class Percolation {
             if (!isOpen(i, j)) {
 
                 grid[i - 1][j - 1] = OPEN;
-                int linearSite = linearize(i, j);
+                int linearSite = linearize(i, j); //store the current site in 1D
 
                 if (i == 1) {
-                    union(virtualTop, linearSite);
+                    quickFind.union(virtualTop, linearSite);
                 } else if (i == this.rows) {
-                    union(virtualBottom, linearSite);
+                    quickFind.union(virtualBottom, linearSite);
                 }
 
                 if (i != this.rows && isOpen(i + 1, j)) {
-                    union(linearSite, linearize(i + 1, j));
+                    quickFind.union(linearSite, linearize(i + 1, j));
                 }
                 if (i != 1 && isOpen(i - 1, j)) {
-                    union(linearSite, linearize(i - 1, j));
+                    quickFind.union(linearSite, linearize(i - 1, j));
                 }
                 if (j != this.rows && isOpen(i, j + 1)) {
-                    union(linearSite, linearize(i, j + 1));
+                    quickFind.union(linearSite, linearize(i, j + 1));
                 }
                 if (j != 1 && isOpen(i, j - 1)) {
-                    union(linearSite, linearize(i, j - 1));
+                    quickFind.union(linearSite, linearize(i, j - 1));
                 }
             } else {
-                throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
+                throw new IndexOutOfBoundsException("The coordinates should be "
+                        + "between 1 and N. You have given: " + i + ", " + j);
             }
         }
     }
@@ -81,7 +73,8 @@ public class Percolation {
         if (i > 0 || i < rows || j > 0 || j < rows) {
             return grid[i - 1][j - 1] == OPEN;
         } else {
-            throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
+            throw new IndexOutOfBoundsException("The coordinates should be "
+                    + "between 1 and N. You have given: " + i + ", " + j);
         }
     }
 
@@ -90,17 +83,14 @@ public class Percolation {
         if (i > 0 || i < rows || j > 0 || j < rows) {
             return quickFind.connected(virtualTop, linearize(i, j));
         } else {
-            throw new IndexOutOfBoundsException("The coordinates should be between 1 and N. You have given: " + i + ", " + j);
+            throw new IndexOutOfBoundsException("The coordinates should be "
+                    + "between 1 and N. You have given: " + i + ", " + j);
         }
     }
 
     // does the system percolate?
     public boolean percolates() {
         return quickFind.connected(virtualTop, virtualBottom);
-    }
-
-    private void union(int p, int q) {
-        quickFind.union(p, q);
     }
 
     //transform 2D grid coordinates to 1D array indexes
