@@ -70,17 +70,19 @@ public class PercolationStats {
 
 //        int N = Integer.parseInt(args[0]);
 //        int T = Integer.parseInt(args[1]);
-        int N = 20;
+        int N = 5000;
         int T = 10;
 
+        Stopwatch watch = new Stopwatch();
         PercolationStats pStats = new PercolationStats(N, T);
-
+        
+        System.out.println(watch.elapsedTime());
         System.out.println("mean = " + pStats.mean());
         System.out.println("stddec = " + pStats.stddev());
         System.out.println("95% confidence interval = "
-                + pStats.confidenceHi()
+                + pStats.confidenceLo()
                 + ","
-                + pStats.confidenceLo());
+                + pStats.confidenceHi());
     }
 
 }

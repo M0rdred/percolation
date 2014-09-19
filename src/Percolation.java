@@ -20,13 +20,13 @@ public class Percolation {
 
     private int[][] grid;
 
-    QuickFindUF quickFind;
+    WeightedQuickUnionUF quickFind;
 
     // create N-by-N grid, with all sites blocked
     public Percolation(int N) {
         if (N > 0) {
 
-            quickFind = new QuickFindUF(N * N + 2);
+            quickFind = new WeightedQuickUnionUF(N * N + 2);
 
             this.rows = N;
 
